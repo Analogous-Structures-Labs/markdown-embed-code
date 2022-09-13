@@ -35,6 +35,7 @@ settings = Settings()
 default_subprocess_args = {
     'check': True,
     'cwd': "/github/workspace",
+    'shell': True,
 }
 
 subprocess.run(

@@ -35,17 +35,19 @@ settings = Settings()
 
 os.chdir("/github/workspace")
 
+directory = subprocess.run(['pwd'], check=True)
+
 default_subprocess_args = {
     'check': True,
     'cwd': "/github/workspace",
 }
 
 subprocess.run(
-    ["git", "config", "--local", "user.name", "github-actions"],
+    ["/usr/bin/git", "config", "--local", "user.name", "github-actions"],
     **default_subprocess_args,
 )
 subprocess.run(
-    ["git", "config", "--local", "user.email", "github-actions@github.com"],
+    ["/usr/bin/git", "config", "--local", "user.email", "github-actions@github.com"],
     **default_subprocess_args,
 )
 
@@ -87,7 +89,7 @@ with open(output_path, "w") as f:
 
 
 proc = subprocess.run(
-    ["git", "status", "--porcelain"],
+    ["/usr/bin/git", "status", "--porcelain"],
     stdout=subprocess.PIPE,
     **default_subprocess_args,
 )
@@ -99,16 +101,19 @@ if not proc.stdout:
     sys.exit(0)
 
 subprocess.run(
-    ["git", "add", output_path],
+    ["/usr/bin/git", "add", output_path],
     **default_subprocess_args,
 )
 subprocess.run(
-    ["git", "commit", "-m", settings.input_message],
+    ["/usr/bin/git", "commit", "-m", settings.input_message],
     **default_subprocess_args,
 )
 
 remote_repo = f"https://{settings.github_actor}:{settings.input_token.get_secret_value()}@github.com/{settings.github_repository}.git"
-proc = subprocess.run(["git", "push", remote_repo, f"HEAD:{pr.head.ref}"], check=False)
+proc = subprocess.run(
+    ["/usr/bin/git", "push", remote_repo, f"HEAD:{pr.head.ref}"],
+    check=False,
+)
 
 if proc.returncode != 0:
     sys.exit(1)

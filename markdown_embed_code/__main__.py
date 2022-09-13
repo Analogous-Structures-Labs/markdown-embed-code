@@ -77,19 +77,18 @@ else:
     output_path = settings.input_markdown
 
 for path in glob.glob(f"./{settings.input_markdown}", recursive=True):
-    with open(path, "r") as f:
+    with open(path, "r+") as f:
         doc = f.read()
+        md = get_code_emb()
+        embedded_doc = md(doc)
 
-    md = get_code_emb()
-    embedded_doc = md(doc)
-
-    with open(path, "w") as f:
+        f.seek(0)
         f.write(embedded_doc)
 
-    subprocess.run(
-        ["/usr/bin/git", "add", output_path],
-        **default_subprocess_args,
-    )
+        subprocess.run(
+            ["/usr/bin/git", "add", output_path],
+            **default_subprocess_args,
+        )
 
 proc = subprocess.run(
     ["/usr/bin/git", "status", "--porcelain"],

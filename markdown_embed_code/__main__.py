@@ -73,6 +73,8 @@ else:
     output_path = settings.input_markdown
 
 for path in glob.glob(f"./{settings.input_markdown}", recursive=True):
+    print(path)
+
     with open(path, "r+") as f:
         doc = f.read()
         md = get_code_emb()

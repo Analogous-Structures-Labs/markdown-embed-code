@@ -11,6 +11,6 @@ COPY ./markdown_embed_code /app/markdown_embed_code
 
 ENV PYTHONPATH=/app
 
-WORKDIR /app
+WORKDIR $GITHUB_WORKSPACE
 
 CMD ["python", "-m", "markdown_embed_code"]

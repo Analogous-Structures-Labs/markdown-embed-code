@@ -33,13 +33,13 @@ class PartialGitHubEvent(BaseModel):
 
 settings = Settings()
 
-os.chdir("/github/workspace")
+#os.chdir("/github/workspace")
 
-directory = subprocess.run(['ls', '-al'], check=True)
+directory = subprocess.run(['pwd'], check=True)
 
 default_subprocess_args = {
     'check': True,
-    'cwd': "/github/workspace",
+    #'cwd': "/github/workspace",
 }
 
 subprocess.run(

@@ -1,4 +1,4 @@
-import os
+import glob
 import subprocess
 import sys
 from pathlib import Path
@@ -76,7 +76,7 @@ if not settings.input_output.is_dir():
 else:
     output_path = settings.input_markdown
 
-for path in Path("").rglob(settings.input_markdown):
+for path in glob.glob(f"./{settings.input_markdown}", recursive=True):
     with open(path, "r") as f:
         doc = f.read()
 

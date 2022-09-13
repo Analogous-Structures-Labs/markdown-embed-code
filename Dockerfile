@@ -1,15 +1,17 @@
 FROM python:3.10-alpine
 
-COPY ./requirements.txt /app/requirements.txt
+ENV APP_DIR=/app \
+    GITHUB_WORKSPACE=/github/workspace
+ENV PYTHONPATH=$APP_DIR:$PYTHONPATH
+
+COPY ./requirements.txt $APP_DIR/requirements.txt
 RUN apk add --no-cache --update \
  git \
  gcc \
  && \
- pip install --no-cache -r /app/requirements.txt
+ pip install --no-cache -r $APP_DIR/requirements.txt
 
-COPY ./markdown_embed_code /app/markdown_embed_code
-
-ENV PYTHONPATH=/app
+COPY ./markdown_embed_code $APP_DIR/markdown_embed_code
 
 WORKDIR $GITHUB_WORKSPACE
 

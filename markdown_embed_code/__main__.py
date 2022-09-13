@@ -38,10 +38,6 @@ default_subprocess_args = {
 }
 
 subprocess.run(
-    ["ls", "-al"],
-    **default_subprocess_args,
-)
-subprocess.run(
     ["/usr/bin/git", "config", "--local", "user.name", "github-actions"],
     **default_subprocess_args,
 )

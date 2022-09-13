@@ -76,15 +76,20 @@ if not settings.input_output.is_dir():
 else:
     output_path = settings.input_markdown
 
-with open(settings.input_markdown, "r") as f:
-    doc = f.read()
+for path in Path("").rglob(settings.input_markdown):
+    with open(path, "r") as f:
+        doc = f.read()
 
-md = get_code_emb()
-embedded_doc = md(doc)
+    md = get_code_emb()
+    embedded_doc = md(doc)
 
-with open(output_path, "w") as f:
-    f.write(embedded_doc)
+    with open(path, "w") as f:
+        f.write(embedded_doc)
 
+    subprocess.run(
+        ["/usr/bin/git", "add", output_path],
+        **default_subprocess_args,
+    )
 
 proc = subprocess.run(
     ["/usr/bin/git", "status", "--porcelain"],
@@ -99,10 +104,6 @@ if not proc.stdout:
     sys.exit(0)
 
 subprocess.run(
-    ["/usr/bin/git", "add", output_path],
-    **default_subprocess_args,
-)
-subprocess.run(
     ["/usr/bin/git", "commit", "-m", settings.input_message],
     **default_subprocess_args,
 )
@@ -110,7 +111,7 @@ subprocess.run(
 remote_repo = f"https://{settings.github_actor}:{settings.input_token.get_secret_value()}@github.com/{settings.github_repository}.git"
 proc = subprocess.run(
     ["/usr/bin/git", "push", remote_repo, f"HEAD:{pr.head.ref}"],
-    check=False,
+    **default_subprocess_args,
 )
 
 if proc.returncode != 0:

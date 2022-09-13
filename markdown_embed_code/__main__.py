@@ -33,14 +33,12 @@ class PartialGitHubEvent(BaseModel):
 
 settings = Settings()
 
-directory = subprocess.run(['pwd'], check=True)
-
 default_subprocess_args = {
     'check': True,
 }
 
 subprocess.run(
-    ["ls", "al"],
+    ["ls", "-al"],
     **default_subprocess_args,
 )
 subprocess.run(

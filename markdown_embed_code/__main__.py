@@ -33,13 +33,10 @@ class PartialGitHubEvent(BaseModel):
 
 settings = Settings()
 
-#os.chdir("/github/workspace")
-
 directory = subprocess.run(['pwd'], check=True)
 
 default_subprocess_args = {
     'check': True,
-    #'cwd': "/github/workspace",
 }
 
 subprocess.run(
@@ -50,7 +47,6 @@ subprocess.run(
     ["/usr/bin/git", "config", "--local", "user.email", "github-actions@github.com"],
     **default_subprocess_args,
 )
-
 
 g = Github(settings.input_token.get_secret_value())
 repo = g.get_repo(settings.github_repository)

@@ -13,6 +13,8 @@ RUN apk add --no-cache --update \
 
 COPY ./markdown_embed_code $APP_DIR/markdown_embed_code
 
+USER 1001:121
+
 WORKDIR $GITHUB_WORKSPACE
 
 CMD ["python", "-m", "markdown_embed_code"]

@@ -23,7 +23,7 @@ def parse(option: str) -> Tuple[Path, int, Optional[int]]:
     return file_path, 0, None
 
 
-class MarkdownEmbEodeRenderer(MarkdownRenderer):
+class MarkdownEmbCodeRenderer(MarkdownRenderer):
     def render_fenced_code(self, element):
         lang = element.__dict__.get("lang")
         lang, *options = lang.rsplit(":", 1)
@@ -55,5 +55,5 @@ class MarkdownEmbEodeRenderer(MarkdownRenderer):
 
 
 def get_code_emb():
-    markdown = Markdown(renderer=MarkdownEmbEodeRenderer)
+    markdown = Markdown(renderer=MarkdownEmbCodeRenderer)
     return markdown

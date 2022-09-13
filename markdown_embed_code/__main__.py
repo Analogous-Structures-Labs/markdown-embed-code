@@ -1,3 +1,4 @@
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -32,10 +33,11 @@ class PartialGitHubEvent(BaseModel):
 
 settings = Settings()
 
+os.chdir("/github/workspace")
+
 default_subprocess_args = {
     'check': True,
     'cwd': "/github/workspace",
-    'shell': True,
 }
 
 subprocess.run(

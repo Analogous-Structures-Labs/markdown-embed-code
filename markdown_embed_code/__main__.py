@@ -35,7 +35,7 @@ settings = Settings()
 
 os.chdir("/github/workspace")
 
-directory = subprocess.run(['ls -al'], check=True)
+directory = subprocess.run(['ls', '-al'], check=True)
 
 default_subprocess_args = {
     'check': True,

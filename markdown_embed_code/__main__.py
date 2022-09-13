@@ -50,17 +50,21 @@ subprocess.run(
 
 g = Github(settings.input_token.get_secret_value())
 repo = g.get_repo(settings.github_repository)
+
 if not settings.github_event_path.is_file():
     sys.exit(1)
 contents = settings.github_event_path.read_text()
 event = PartialGitHubEvent.parse_raw(contents)
+
 if event.number is not None:
     number = event.number
 elif event.inputs and event.inputs.number:
     number = event.inputs.number
 else:
     sys.exit(1)
+
 pr = repo.get_pull(number)
+
 if pr.merged:
     # ignore at merged
     sys.exit(0)
@@ -85,6 +89,7 @@ proc = subprocess.run(
     stdout=subprocess.PIPE,
     **default_subprocess_args,
 )
+
 if not proc.stdout:
     # no change
     if not settings.input_silent:
@@ -102,5 +107,6 @@ subprocess.run(
 
 remote_repo = f"https://{settings.github_actor}:{settings.input_token.get_secret_value()}@github.com/{settings.github_repository}.git"
 proc = subprocess.run(["git", "push", remote_repo, f"HEAD:{pr.head.ref}"], check=False)
+
 if proc.returncode != 0:
     sys.exit(1)

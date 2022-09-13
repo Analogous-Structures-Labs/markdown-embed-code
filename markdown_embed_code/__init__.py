@@ -63,5 +63,4 @@ class MarkdownEmbCodeRenderer(MarkdownRenderer):
 
 
 def get_code_emb():
-    markdown = Markdown(renderer=MarkdownEmbCodeRenderer)
-    return markdown
+    return Markdown(renderer=MarkdownEmbCodeRenderer)

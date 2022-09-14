@@ -62,10 +62,8 @@ elif event.inputs and event.inputs.number:
 else:
     sys.exit(1)
 
-pr = repo.get_pull(number)
-
-if pr.merged:
-    # ignore at merged
+# Ignore already merged PRs.
+if repo.get_pull(number).merged:
     sys.exit(0)
 
 if not settings.input_output.is_dir():
@@ -83,6 +81,11 @@ for path in Path(".").glob(settings.input_markdown):
 
         f.seek(0)
         f.write(embedded_doc)
+
+        output_path = path
+
+        if settings.input_output.is_dir():
+            output_path = f'{settings.input_output}/{path}'
 
         subprocess.run(
             ["/usr/bin/git", "add", output_path],

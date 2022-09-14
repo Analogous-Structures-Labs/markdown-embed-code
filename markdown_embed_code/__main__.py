@@ -10,17 +10,16 @@ from markdown_embed_code import convert
 
 
 class Settings(BaseSettings):
-    input_markdown: Path = Path("README.md")
-    input_message: str = "📝 Update Readme"
-    input_no_change: str = "No changes on README!"
-    input_output: Path = Path("")
-    input_silent: bool = False
-    input_token: SecretStr
     github_actor: str
     github_head_ref: str
     github_ref: str
     github_repository: str
-    github_event_path: Path
+    input_markdown: Path = Path("README.md")
+    input_message: str = "Embed code into Markdown"
+    input_no_change: str = "No changes were made!"
+    input_output: Path = Path("")
+    input_silent: bool = False
+    input_token: SecretStr
 
 
 def run_command(command: List, **kwargs):

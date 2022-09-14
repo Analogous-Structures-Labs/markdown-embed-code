@@ -30,6 +30,12 @@ def run_command(command: List, **kwargs):
     )
 
 
+def overwrite_file(file_handle, new_contents):
+    file_handle.seek(0)
+    file_handle.truncate()
+    file_handle.write(new_contents)
+
+
 settings = Settings()
 
 run_command(["git", "config", "--local", "user.name", "github-actions"])
@@ -42,12 +48,7 @@ if ref is None:
 
 for path in Path(".").glob(str(settings.input_markdown)):
     with open(path, "r+") as f:
-        embedded_doc = convert(f.read())
-
-        f.seek(0)
-        f.write(embedded_doc)
-        f.truncate()
-
+        overwrite_file(f, convert(f.read()))
         run_command(["git", "add", path])
 
 proc = run_command(

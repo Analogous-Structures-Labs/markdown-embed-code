@@ -19,7 +19,7 @@ In markdown, reference your file as follows in an otherwise empty code block.
 ```
 ````
 
-The action reads in the content from `tests/src/sample.py` and inserts it into your code block like so:
+The action reads in the content from `tests/src/sample.py` and inserts its contents into your code block like so:
 
 ```python:tests/src/sample.py
 from math import sqrt

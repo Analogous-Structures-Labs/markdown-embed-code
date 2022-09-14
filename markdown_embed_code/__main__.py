@@ -32,8 +32,6 @@ class PartialGitHubEvent(BaseModel):
 
 settings = Settings()
 
-print(settings.input_markdown)
-
 default_subprocess_args = {
     'check': True,
 }
@@ -51,7 +49,6 @@ g = Github(settings.input_token.get_secret_value())
 repo = g.get_repo(settings.github_repository)
 
 if not settings.github_event_path.is_file():
-    print("exit 1")
     sys.exit(1)
 contents = settings.github_event_path.read_text()
 event = PartialGitHubEvent.parse_raw(contents)
@@ -64,13 +61,12 @@ elif event.inputs and event.inputs.number:
 
 # Ignore already merged PRs.
 if number and repo.get_pull(number).merged:
-    print("exit 3")
     sys.exit(0)
 
 print("loop time")
 print(settings.input_markdown)
 
-for path in Path(".").glob(settings.input_markdown):
+for path in Path(".").glob(str(settings.input_markdown)):
     with open(path, "r+") as f:
         doc = f.read()
         md = get_code_emb()
@@ -80,7 +76,6 @@ for path in Path(".").glob(settings.input_markdown):
         f.write(embedded_doc)
 
         output_path = path
-
         if settings.input_output.is_dir():
             output_path = f'{settings.input_output}/{path}'
 

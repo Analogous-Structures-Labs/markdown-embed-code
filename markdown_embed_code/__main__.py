@@ -34,8 +34,8 @@ def run_command(command: List, **kwargs):
 
 def overwrite_file(file_handle, new_contents):
     file_handle.seek(0)
-    file_handle.truncate()
     file_handle.write(new_contents)
+    file_handle.truncate()
 
 
 try:

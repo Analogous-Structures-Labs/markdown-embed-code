@@ -64,5 +64,6 @@ try:
     else:
         print("No changes were made.")
 
-except subprocess.CalledProcessError:
+except subprocess.CalledProcessError as e:
+    print(e)
     sys.exit(1)

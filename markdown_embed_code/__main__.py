@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     github_ref: str
     github_repository: str
     input_markdown: Path = Path("README.md")
-    input_message: str = "Embed code into Markdown"
+    input_message: str = "Embed code into Markdown."
     input_no_change: str = "No changes were made!"
     input_output: Path = Path("")
     input_silent: bool = False

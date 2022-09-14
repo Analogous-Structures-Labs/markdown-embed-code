@@ -24,7 +24,7 @@ class Settings(BaseSettings):
 
 
 def run_command(command: List, **kwargs):
-    subprocess.run(
+    return subprocess.run(
         command,
         check=True,
         **kwargs,

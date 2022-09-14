@@ -1,6 +1,7 @@
 FROM python:3.10-alpine
 
-ENV APP_DIR=/app
+ENV APP_DIR=/app \
+    GITHUB_WORKSPACE=/github/workspace
 ENV PYTHONPATH=$APP_DIR:$PYTHONPATH
 
 COPY ./requirements.txt $APP_DIR/requirements.txt
@@ -10,8 +11,9 @@ RUN apk add --no-cache --update \
     && \
     pip install --no-cache -r $APP_DIR/requirements.txt
 
-COPY ./markdown_embed_code $APP_DIR/markdown_embed_code
+# Handle scenario where host runner owns the repository.
+RUN chown -R $(id -u):$(id -g) $GITHUB_WORKSPACE
 
-USER 1001:121
+COPY ./markdown_embed_code $APP_DIR/markdown_embed_code
 
 CMD ["python", "-m", "markdown_embed_code"]

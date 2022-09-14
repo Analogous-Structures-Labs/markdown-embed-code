@@ -46,7 +46,10 @@ try:
     if not ref:
         sys.exit(1)
 
-    for path in Path(".").glob(str(settings.input_markdown)):
+    if Path(settings.input_markdown).is_dir():
+        settings.input_markdown = f'{settings.input_markdown}/*.md'
+
+    for path in Path(".").glob(settings.input_markdown):
         with open(path, "r+") as f:
             overwrite_file(f, convert(f.read()))
             run_command(["git", "add", path])

@@ -86,8 +86,11 @@ jobs:
 | message (Optional)   | Commit message for action. (default: "Embed code into Markdown.")        |
 
 
-The path value specific for markdown supports glob patterns.
+## Specifying your markdown path
+
+The value provided for the `markdown` parameter supports specifying directories and glob patterns.
 "README.md" will process only the top level README.
-"some_dir/README.md" will processonly the README file within some_dir.
+"some_dir" will process any files in some_dir with .md as their file extension.
+"some_dir/README.md" will process only the README file within some_dir.
 "\*\*/README.md" will process any markdown files named README.md, recursively through your repository.
-"\*\*/*.md" will process any markdown files with .md as their extension, recursively through your repository.
+"\*\*/*.md" will process any markdown files with .md as their file extension, recursively through your repository.

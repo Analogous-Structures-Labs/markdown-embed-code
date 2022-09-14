@@ -7,7 +7,7 @@ from marko.md_renderer import MarkdownRenderer
 
 def parse(option: str) -> Tuple[Path, int, Optional[int]]:
     file, *options = option.split("[", 1)
-    file_path = Path(file.strip())
+    file_path = Path(file.strip()).resolve()
 
     if options:
         option = options[0]

@@ -56,18 +56,13 @@ if not settings.github_event_path.is_file():
 contents = settings.github_event_path.read_text()
 event = PartialGitHubEvent.parse_raw(contents)
 
-print(event.number)
-
 if event.number is not None:
     number = event.number
 elif event.inputs and event.inputs.number:
     number = event.inputs.number
-else:
-    print("exit 2")
-    sys.exit(1)
 
 # Ignore already merged PRs.
-if repo.get_pull(number).merged:
+if number and repo.get_pull(number).merged:
     print("exit 3")
     sys.exit(0)
 

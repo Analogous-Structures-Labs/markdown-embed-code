@@ -7,7 +7,7 @@ from marko.md_renderer import MarkdownRenderer
 
 def parse(option: str) -> Tuple[Path, int, Optional[int]]:
     file, *options = option.split("[", 1)
-    file_path = Path(file.strip()).resolve()
+    file_path = Path(file.strip())
 
     if options:
         option = options[0]
@@ -62,5 +62,8 @@ class MarkdownEmbCodeRenderer(MarkdownRenderer):
         return template.format(self.render_children(element), element.dest, title)
 
 
-def get_code_emb():
-    return Markdown(renderer=MarkdownEmbCodeRenderer)
+_markdown = Markdown(renderer=MarkdownEmbCodeRenderer)
+
+
+def convert(document: str):
+    return _markdown(document)

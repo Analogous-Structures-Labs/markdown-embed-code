@@ -71,6 +71,8 @@ if not settings.input_output.is_dir():
 else:
     output_path = settings.input_markdown
 
+print(settings.input_markdown)
+
 for path in Path(".").glob(settings.input_markdown):
     with open(path, "r+") as f:
         doc = f.read()

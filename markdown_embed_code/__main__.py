@@ -1,4 +1,3 @@
-import glob
 import subprocess
 import sys
 from pathlib import Path
@@ -72,9 +71,7 @@ if not settings.input_output.is_dir():
 else:
     output_path = settings.input_markdown
 
-for path in glob.glob(f"./{settings.input_markdown}", recursive=True):
-    print(path)
-
+for path in Path(".").glob(settings.input_markdown):
     with open(path, "r+") as f:
         doc = f.read()
         md = get_code_emb()

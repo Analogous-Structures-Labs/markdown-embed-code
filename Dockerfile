@@ -11,8 +11,8 @@ RUN apk add --no-cache --update \
     && \
     pip install --no-cache -r $APP_DIR/requirements.txt
 
-# Handle scenario where host runner owns the repository.
-RUN chown -R $(id -u):$(id -g) $GITHUB_WORKSPACE
+# # Handle scenario where host runner owns the repository.
+# RUN chown -R $(id -u):$(id -g) $GITHUB_WORKSPACE
 
 COPY ./markdown_embed_code $APP_DIR/markdown_embed_code
 

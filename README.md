@@ -1,5 +1,7 @@
 # markdown-embed-code
 
+Forked from [https://github.com/tokusumi/readme-code-testing](https://github.com/tokusumi/readme-code-testing) and partially rewritten with some fixes, some features added, some removed.
+
 Allows you to "import" code into your markdown files from elsewhere in your repository without having to manually copy and paste.
 Supports code blocks in any language. Your original markdown file(s) will be overwritten with the rendered content.
 
@@ -7,7 +9,7 @@ Supports code blocks in any language. Your original markdown file(s) will be ove
 
 ## Usage
 
-### Entire files
+### Embedding Entire files
 
 In markdown, reference your file as follows in an otherwise empty code block.
 
@@ -30,7 +32,7 @@ def sample(x):
 
 Any contents within your code block will be overwritten. Paths are relative to the root of your repository and not the directory containing the file being processed.
 
-### Snippets
+### Embedding Snippets
 
 You can pull in a snippet from a file by including a range of line numbers like so:
 
@@ -86,7 +88,7 @@ jobs:
 | message (Optional)   | Commit message for action. (default: "Embed code into Markdown.")        |
 
 
-## Specifying your markdown path
+### Specifying your markdown path
 
 The value provided for the `markdown` parameter supports specifying directories and glob patterns.
 "README.md" will process only the top level README.

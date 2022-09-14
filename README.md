@@ -82,10 +82,8 @@ jobs:
 | input                | description                                                              |
 | -------------------- | ------------------------------------------------------------------------ |
 | token                | Token for the repo. Can be passed in using. `{{ secrets.GITHUB_TOKEN }}` |
-| markdown (Optional)  | Target markdown path. Supports glob patterns. (default: "README.md")     |
+| markdown (Optional)  | Target path for your markdown file(s). (default: "README.md")            |
 | message (Optional)   | Commit message for action. (default: "Embed code into Markdown.")        |
-| no_change (Optional) | Issue comment at no changed. (default: "No changes on README!")          |
-| silent (Optional)    | No issue comment in silent mode. (default: false)                        |
 
 
 The path value specific for markdown supports glob patterns.

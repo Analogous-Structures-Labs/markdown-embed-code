@@ -56,6 +56,7 @@ if not settings.github_event_path.is_file():
 contents = settings.github_event_path.read_text()
 event = PartialGitHubEvent.parse_raw(contents)
 
+number = None
 if event.number is not None:
     number = event.number
 elif event.inputs and event.inputs.number:

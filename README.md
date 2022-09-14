@@ -83,7 +83,7 @@ jobs:
 
 | input                | description                                                              |
 | -------------------- | ------------------------------------------------------------------------ |
-| token                | Token for the repo. Can be passed in using. `{{ secrets.GITHUB_TOKEN }}` |
+| token                | Token for the repo. Can be passed in using `{{ secrets.GITHUB_TOKEN }}`. |
 | markdown (Optional)  | Target path for your markdown file(s). (default: "README.md")            |
 | message (Optional)   | Commit message for action. (default: "Embed code into Markdown.")        |
 

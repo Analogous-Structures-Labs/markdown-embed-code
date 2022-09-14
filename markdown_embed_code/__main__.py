@@ -20,14 +20,12 @@ class Settings(BaseSettings):
 
 
 def run_command(command: List, **kwargs):
-    completed_process = subprocess.run(
+    return subprocess.run(
         command,
         check=True,
         **kwargs,
     )
 
-    completed_process.check_returncode()
-    return completed_process
 
 def overwrite_file(file_handle, new_contents):
     file_handle.seek(0)

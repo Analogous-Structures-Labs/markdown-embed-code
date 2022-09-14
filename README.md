@@ -74,9 +74,8 @@ jobs:
       - uses: analogous-structures-labs/markdown-embed-code@main
         with:
           markdown: "README.md"
-          token: ${{ secrets.GITHUB_TOKEN }}
           message: "Synchronize Readme."
-          silent: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ### Configuration

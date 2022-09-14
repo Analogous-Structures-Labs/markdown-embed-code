@@ -32,6 +32,8 @@ class PartialGitHubEvent(BaseModel):
 
 settings = Settings()
 
+print(settings.input_markdown)
+
 default_subprocess_args = {
     'check': True,
 }
@@ -70,8 +72,6 @@ if not settings.input_output.is_dir():
     output_path = settings.input_output
 else:
     output_path = settings.input_markdown
-
-print(settings.input_markdown)
 
 for path in Path(".").glob(settings.input_markdown):
     with open(path, "r+") as f:

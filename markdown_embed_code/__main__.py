@@ -51,6 +51,7 @@ g = Github(settings.input_token.get_secret_value())
 repo = g.get_repo(settings.github_repository)
 
 if not settings.github_event_path.is_file():
+    print("exit 1")
     sys.exit(1)
 contents = settings.github_event_path.read_text()
 event = PartialGitHubEvent.parse_raw(contents)
@@ -60,17 +61,15 @@ if event.number is not None:
 elif event.inputs and event.inputs.number:
     number = event.inputs.number
 else:
+    print("exit 2")
     sys.exit(1)
 
 # Ignore already merged PRs.
 if repo.get_pull(number).merged:
+    print("exit 3")
     sys.exit(0)
 
-if not settings.input_output.is_dir():
-    output_path = settings.input_output
-else:
-    output_path = settings.input_markdown
-
+print("loop time")
 print(settings.input_markdown)
 
 for path in Path(".").glob(settings.input_markdown):

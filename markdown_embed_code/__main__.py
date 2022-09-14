@@ -63,6 +63,8 @@ try:
         run_command(["git", "commit", "-m", settings.input_message])
         remote_repo = f"https://{settings.github_actor}:{settings.input_token.get_secret_value()}@github.com/{settings.github_repository}.git"
         run_command(["git", "push", remote_repo, f"HEAD:{ref}"])
+    else:
+        print("No changes were made.")
 
 except subprocess.CalledProcessError:
     sys.exit(1)

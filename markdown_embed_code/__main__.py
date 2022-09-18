@@ -37,7 +37,7 @@ settings = Settings()
 
 # The checkout action checks out code as the runner user (1001:121). Our docker image runs as root
 # as recommended by the GitHub actions documentation. For that reason, we're ensuring he the user
-# running the script owns the workspace. Otherwise, the subsequentgot commands will fail.
+# running the script owns the workspace. Otherwise, the subsequent git commands will fail.
 run_command("chown -R $(id -u):$(id-g) .", shell=True)
 
 run_command(["git", "config", "--local", "user.name", "github-actions"])

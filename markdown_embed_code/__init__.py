@@ -20,7 +20,7 @@ def slice_file(
 ) -> Lines:
     with file_path.open() as file:
         for line_number, line in enumerate(file):
-            if ending_at and line_number == ending_at:
+            if ending_at and line_number >= ending_at:
                 break
             if line_number >= starting_at - 1:
                 yield f"{line}\n" if line[-1] != "\n" else line

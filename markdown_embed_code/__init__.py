@@ -4,7 +4,7 @@ import re
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterator, Optional
+from typing import Any, Iterator, Optional
 
 from marko import Markdown
 from marko.md_renderer import MarkdownRenderer
@@ -26,6 +26,13 @@ def slice_file(
                 yield f"{line}\n" if line[-1] != "\n" else line
 
 
+def safe_int(castee: Any, default: Any) -> Union[int, None]:
+    try:
+        return int(castee)
+    except (TypeError, ValueError):
+        return default
+
+
 @dataclass
 class Embed:
     file_path: Path
@@ -34,14 +41,17 @@ class Embed:
 
     @classmethod
     def from_string(cls, embed_string: str) -> Embed:
-        path, *other = re.split(r"\[([\d\s\-:]*)\]", embed_string)
-        line_range, *_ = other or ["1"]
-        start, end = (re.split(r"-|:", line_range) + [""])[:2]
+        try:
+            path, start_at, end_at = embed_string, 1, None
+            path, start_at, *_ = re.split(r"\[([\d\s\-:]*)\]", embed_string, maxsplit=1)
+            start_at, end_at = re.split(r"-|:", start_at, maxsplit=1)
+        except ValueError:
+            pass
 
         return cls(
             file_path=Path(path.strip()),
-            start_line_number=int(start) or 1,
-            end_line_number=int(end) if end else None,
+            start_line_number=safe_int(start_at, 1) or 1,
+            end_line_number=safe_int(end_at, None),
         )
 
     @property

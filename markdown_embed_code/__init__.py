@@ -10,11 +10,14 @@ from marko import Markdown
 from marko.md_renderer import MarkdownRenderer
 
 
-def get_file_slice(
+Lines = Iterator[str]
+
+
+def slice_file(
     file_path: Path,
     starting_at: Optional[int] = 1,
     ending_at: Optional[int] = None,
-) -> Iterator:
+) -> Lines:
     with file_path.open() as file:
         for line_number, line in enumerate(file):
             if ending_at and line_number == ending_at:
@@ -44,7 +47,7 @@ class Embed:
     @property
     def code(self) -> str:
         return ''.join(
-            get_file_slice(
+            slice_file(
                 file_path = self.file_path,
                 starting_at=self.start_line_number,
                 ending_at=self.end_line_number,

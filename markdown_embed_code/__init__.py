@@ -43,7 +43,7 @@ class Embed:
     def from_string(cls, embed_string: str) -> Embed:
         try:
             path, start_at, end_at = embed_string, 1, None
-            path, start_at, *_ = re.split(r"\[([\d\s\-:]*)\]", embed_string, maxsplit=1)
+            path, start_at, *_ = re.split(r"\[([\d\s]*(-|:)?[\d\s]*)\]", embed_string, maxsplit=1)
             start_at, end_at = re.split(r"-|:", start_at, maxsplit=1)
         except ValueError:
             pass

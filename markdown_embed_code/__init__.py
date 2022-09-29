@@ -40,7 +40,7 @@ class Embed:
             delimeter_pattern = rf"{'|'.join(cls.DELIMETERS)}"
             path, start_at, end_at = embed_string, 1, None
             path, line_range = re.match(rf"^(.*)\[([\d\s]*(?:{delimeter_pattern})?[\d\s]*)\]", path).group(1, 2)
-            start_at, end_at = re.match(rf"\s*(\d*)?\s*(?:{delimeter_pattern})?\s*(\d*)?\s*", line_range).group(1, 2)
+            start_at, end_at = re.match(rf"(\d*)?(?:{delimeter_pattern})?(\d*)?", re.sub(r"\s", "", line_range)).group(1, 2)
             start_at = int(start_at or 1) or 1
             end_at = int(end_at) if end_at else None
         except AttributeError:

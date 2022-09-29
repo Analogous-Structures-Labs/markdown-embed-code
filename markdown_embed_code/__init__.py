@@ -4,17 +4,30 @@ import re
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
+from typing import Iterator, Optional
 
 from marko import Markdown
 from marko.md_renderer import MarkdownRenderer
 
 
+def get_file_slice(
+    file_path: Path,
+    starting_at: Optional[int] = 1,
+    ending_at: Optional[int] = None,
+) -> Iterator:
+    with file_path.open() as file:
+        for line_number, line in enumerate(file):
+            if ending_at and line_number == ending_at:
+                break
+            if line_number >= starting_at - 1:
+                yield f"{line}\n" if line[-1] != "\n" else line
+
+
 @dataclass
 class Embed:
     file_path: Path
-    start_line: int
-    end_line: Optional[int]
+    start_line_number: int
+    end_line_number: Optional[int]
 
     @classmethod
     def from_string(cls, embed_string: str) -> Embed:
@@ -24,15 +37,19 @@ class Embed:
 
         return cls(
             file_path=Path(path.strip()),
-            start_line=int(start) or 1,
-            end_line=int(end) if end else None,
+            start_line_number=int(start) or 1,
+            end_line_number=int(end) if end else None,
         )
 
-    def get_code(self) -> str:
-        with self.file_path.open() as file:
-            code = "".join(file.readlines()[self.start_line - 1:self.end_line])
-
-            return f"{code}\n" if code[-1] != "\n" else code
+    @property
+    def code(self) -> str:
+        return ''.join(
+            get_file_slice(
+                file_path = self.file_path,
+                starting_at=self.start_line_number,
+                ending_at=self.end_line_number,
+            )
+        )
 
 
 class MarkdownEmbCodeRenderer(MarkdownRenderer):
@@ -41,7 +58,7 @@ class MarkdownEmbCodeRenderer(MarkdownRenderer):
 
         if options:
             embed_string = options[0] + element.__dict__.get("extra", "")
-            element.children[0].children = Embed.from_string(embed_string).get_code()
+            element.children[0].children = Embed.from_string(embed_string).code
 
         return super().render_fenced_code(element)
 

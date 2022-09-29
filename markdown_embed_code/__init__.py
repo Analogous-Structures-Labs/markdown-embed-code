@@ -1,14 +1,12 @@
 from __future__ import annotations
 
 import re
-
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar, Iterator, Optional
 
 from marko import Markdown
 from marko.md_renderer import MarkdownRenderer
-
 
 Lines = Iterator[str]
 

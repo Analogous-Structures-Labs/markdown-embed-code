@@ -32,24 +32,18 @@ class Embed:
     start_line_number: int
     end_line_number: Optional[int]
 
-    DELIMETERS: ClassVar[str] = ["-", ":", ","]
-
     @classmethod
-    def from_string(cls, embed_string: str) -> Embed:
+    def from_string(cls, path: str) -> Embed:
         try:
-            delimeter_pattern = rf"{'|'.join(cls.DELIMETERS)}"
-            path, start_at, end_at = embed_string, 1, None
-            path, line_range = re.match(rf"^(.*)\[([\d\s]*(?:{delimeter_pattern})?[\d\s]*)\]", path).group(1, 2)
-            start_at, end_at = re.match(rf"(\d*)?(?:{delimeter_pattern})?(\d*)?", re.sub(r"\s", "", line_range)).group(1, 2)
-            start_at = int(start_at or 1) or 1
-            end_at = int(end_at) if end_at else None
+            start_at, end_at = 1, None
+            path, start_at, end_at = re.match(r"(.*)\[\s*(\d*)?\s*(?:-|:|,)?\s*(\d*)?\s*\]", path).group(1, 2, 3)
         except AttributeError:
             pass
 
         return cls(
             file_path=Path(path.strip()),
-            start_line_number=start_at,
-            end_line_number=end_at,
+            start_line_number=int(start_at or 1) or 1,
+            end_line_number=int(end_at) if end_at else None,
         )
 
     @property

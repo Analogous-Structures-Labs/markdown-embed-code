@@ -4,7 +4,7 @@ import re
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterator, Optional
+from typing import Any, ClassVar, Iterator, Optional
 
 from marko import Markdown
 from marko.md_renderer import MarkdownRenderer
@@ -26,32 +26,30 @@ def slice_file(
                 yield f"{line}\n" if line[-1] != "\n" else line
 
 
-def safe_int(castee: Any, default: Any) -> Union[int, None]:
-    try:
-        return int(castee)
-    except (TypeError, ValueError):
-        return default
-
-
 @dataclass
 class Embed:
     file_path: Path
     start_line_number: int
     end_line_number: Optional[int]
 
+    DELIMETERS: ClassVar[str] = ["-", ":", ","]
+
     @classmethod
     def from_string(cls, embed_string: str) -> Embed:
         try:
+            delimeter_pattern = rf"{'|'.join(cls.DELIMETERS)}"
             path, start_at, end_at = embed_string, 1, None
-            path, start_at, *_ = re.split(r"\[([\d\s]*(-|:)?[\d\s]*)\]", embed_string, maxsplit=1)
-            start_at, end_at = re.split(r"-|:", start_at, maxsplit=1)
-        except ValueError:
+            path, line_range = re.match(rf"^(.*)\[([\d\s]*(?:{delimeter_pattern})?[\d\s]*)\]", path).group(1, 2)
+            start_at, end_at = re.match(rf"\s*(\d*)?\s*(?:{delimeter_pattern})?\s*(\d*)?\s*", line_range).group(1, 2)
+            start_at = int(start_at or 1) or 1
+            end_at = int(end_at) if end_at else None
+        except AttributeError:
             pass
 
         return cls(
             file_path=Path(path.strip()),
-            start_line_number=safe_int(start_at, 1) or 1,
-            end_line_number=safe_int(end_at, None),
+            start_line_number=start_at,
+            end_line_number=end_at,
         )
 
     @property

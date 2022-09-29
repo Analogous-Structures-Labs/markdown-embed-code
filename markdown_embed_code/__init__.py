@@ -15,22 +15,23 @@ Lines = Iterator[str]
 
 def slice_file(
     file_path: Path,
-    starting_at: Optional[int] = 1,
-    ending_at: Optional[int] = None,
+    start_at: Optional[int] = 1,
+    end_at: Optional[int] = None,
 ) -> Lines:
+    start_at -= 1
     with file_path.open() as file:
         for line_number, line in enumerate(file):
-            if ending_at and line_number >= ending_at:
+            if end_at and line_number >= end_at:
                 break
-            if line_number >= starting_at - 1:
+            if line_number >= start_at:
                 yield f"{line}\n" if line[-1] != "\n" else line
 
 
 @dataclass
 class Embed:
     file_path: Path
-    start_line_number: int
-    end_line_number: Optional[int]
+    start_at: int
+    end_at: Optional[int]
 
     @classmethod
     def from_string(cls, path: str) -> Embed:
@@ -42,19 +43,13 @@ class Embed:
 
         return cls(
             file_path=Path(path.strip()),
-            start_line_number=int(start_at or 1) or 1,
-            end_line_number=int(end_at) if end_at else None,
+            start_at=int(start_at or 1) or 1,
+            end_at=int(end_at) if end_at else None,
         )
 
     @property
     def code(self) -> str:
-        return ''.join(
-            slice_file(
-                file_path = self.file_path,
-                starting_at=self.start_line_number,
-                ending_at=self.end_line_number,
-            )
-        )
+        return ''.join(slice_file(**self.__dict__))
 
 
 class MarkdownEmbCodeRenderer(MarkdownRenderer):

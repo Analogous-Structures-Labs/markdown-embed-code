@@ -6,7 +6,7 @@ from typing import TextIO
 from git import Actor, Repo
 from pydantic import BaseSettings, SecretStr
 
-from markdown_embed_code import render
+from markdown_embed_code import render_markdown
 
 
 class Settings(BaseSettings):
@@ -50,7 +50,7 @@ markdown_glob = f'{settings.input_markdown}/*.md' if Path(settings.input_markdow
 
 for file_path in Path(".").glob(markdown_glob):
     with file_path.open("r+") as file:
-        overwrite_file(file, render(file.read()))
+        overwrite_file(file, render_markdown(file.read()))
         repo.index.add([str(file_path)])
 
 if repo.is_dirty(untracked_files=True):

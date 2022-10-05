@@ -23,13 +23,12 @@ class Settings(BaseSettings):
     input_token: SecretStr
 
 
-def overwrite_file(
-    file_handle: TextIO,
-    new_contents: str,
-):
-    file_handle.seek(0)
-    file_handle.write(new_contents)
-    file_handle.truncate()
+def render_file(file_path: Path):
+    with file_path.open("r+") as file:
+        rendered_contents = render_markdown(file.read())
+        file.seek(0)
+        file.write(rendered_contents)
+        file.truncate()
 
 
 def main(settings: Settings):
@@ -57,9 +56,8 @@ def main(settings: Settings):
     markdown_glob = f"{settings.input_markdown}/*.md" if (workspace / settings.input_markdown).is_dir() else settings.input_markdown
 
     for file_path in Path(workspace).glob(markdown_glob):
-        with file_path.open("r+") as file:
-            overwrite_file(file, render_markdown(file.read()))
-            repo.index.add([str(file_path)])
+        render_file(file_path)
+        repo.index.add([str(file_path)])
 
     if repo.is_dirty(untracked_files=True):
         repo.index.commit(

@@ -48,7 +48,8 @@ def main(settings: Settings):
 
     for file_path in Path(workspace).glob(markdown_glob):
         render_markdown_file(file_path)
-        repo.index.add([str(file_path)])
+
+    repo.index.add([markdown_glob])
 
     if repo.is_dirty(untracked_files=True):
         repo.index.commit(

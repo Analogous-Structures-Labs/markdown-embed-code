@@ -36,7 +36,7 @@ if not ref:
 # with this script running in our container as root, which is recommended by the actions documentation.
 # The below ensures that the runner of this script can do its work.
 run(
-    f"chown -R $(id -u):$(id-g) .",
+    f"chown -R $(id -u) .",
     check=True,
     shell=True,
 )

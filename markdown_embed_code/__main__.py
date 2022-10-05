@@ -1,6 +1,6 @@
 from git import Actor, Repo
 from pathlib import Path
-from subprocess import run
+from subprocess import , run
 from sys import exit
 from typing import List
 
@@ -48,7 +48,15 @@ if not ref:
 actor = Actor(settings.github_actor, "github-actions@github.com")
 remote_repo_url = f"https://{settings.github_actor}:{settings.input_token.get_secret_value()}@github.com/{settings.github_repository}.git"
 repo = Repo(".")
-repo.create_remote('origin', remote_repo_url)
+
+with repo.config_writer() as git_config:
+    git_config.set_value("global", "safe.directory", ".")
+    # git_config.set_value('user', 'email', 'someone@example.com')
+    # git_config.set_value('user', 'name', 'John Doe')
+
+repo.remotes.origin.set_url(remote_repo_url)
+
+
 
 if Path(settings.input_markdown).is_dir():
     settings.input_markdown = f'{settings.input_markdown}/*.md'

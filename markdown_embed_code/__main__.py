@@ -39,7 +39,7 @@ settings = Settings()
 # The checkout action checks out code as the runner user (1001:121). Our docker image runs as root
 # as recommended by the GitHub actions documentation. For that reason, we're ensuring he the user
 # running the script owns the workspace. Otherwise, the subsequent git commands will fail.
-#run_command("chown -R $(id -u):$(id-g) .", shell=True)
+run_command(f"chown -R $(id -u):$(id-g) {settings.github_workspace}", shell=True)
 
 ref = settings.github_head_ref or settings.github_ref
 
@@ -49,12 +49,6 @@ if not ref:
 actor = Actor(settings.github_actor, "github-actions@github.com")
 remote_repo_url = f"https://{settings.github_actor}:{settings.input_token.get_secret_value()}@github.com/{settings.github_repository}.git"
 repo = Repo(".")
-
-with repo.config_writer() as git_config:
-    git_config.set_value("global", "safe.directory", settings.github_workspace)
-    git_config.set_value('user', 'name', settings.github_actor)
-    git_config.set_value('user', 'email', "github-actions@github.com")
-
 repo.remotes.origin.set_url(remote_repo_url)
 
 if Path(settings.input_markdown).is_dir():

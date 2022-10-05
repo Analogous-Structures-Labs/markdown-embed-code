@@ -56,7 +56,10 @@ for file_path in Path(".").glob(markdown_glob):
 if repo.is_dirty(untracked_files=True):
     repo.index.commit(
         settings.input_message,
-        author=Actor(settings.github_actor, "github-actions@github.com"),
+        author=Actor(
+            name=settings.github_actor,
+            email="github-actions@github.com",
+        ),
     )
     repo.remotes.origin.push(f"HEAD:{ref}").raise_if_error()
 else:

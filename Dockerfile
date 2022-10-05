@@ -9,9 +9,10 @@ COPY ./requirements.txt $APP_DIR/requirements.txt
 RUN apk add --no-cache --update \
     git \
     && \
-    git config --global --add safe.directory '*' && \
     pip install --no-cache -r $APP_DIR/requirements.txt
 
 COPY ./markdown_embed_code $APP_DIR/markdown_embed_code
+
+RUN git config --global --add safe.directory /github/workspace
 
 CMD ["python", "-m", "markdown_embed_code"]

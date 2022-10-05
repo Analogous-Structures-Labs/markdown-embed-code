@@ -33,7 +33,7 @@ def main(settings: Settings):
     # WORKAROUND: The checkout action clones the repo out as the runner user (id 1001) and our
     # container / script runs as root, as recommended by the actions documentation.
     # The below ensures that this script has permission to do its work.
-    chown(workspace, getuid(), getgid())
+    # chown(workspace, getuid(), getgid())
 
     glob_pattern = f"{settings.input_markdown}/*.md" if (workspace / settings.input_markdown).is_dir() else settings.input_markdown
 

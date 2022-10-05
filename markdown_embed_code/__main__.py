@@ -57,7 +57,7 @@ if Path(settings.input_markdown).is_dir():
 for file_path in Path(".").glob(settings.input_markdown):
     with file_path.open("r+") as file:
         overwrite_file(file, render(file.read()))
-        repo.index.add([file_path])
+        repo.index.add([str(file_path)])
 
 if repo.is_dirty(untracked_files=True):
     repo.index.commit(

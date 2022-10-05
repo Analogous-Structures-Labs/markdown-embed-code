@@ -41,15 +41,12 @@ run(
     shell=True,
 )
 
-actor = Actor(settings.github_actor, "github-actions@github.com")
-remote_repo_url = f"https://{settings.github_actor}:{settings.input_token.get_secret_value()}@github.com/{settings.github_repository}.git"
 repo = Repo(".")
+remote_repo_url = f"https://{settings.github_actor}:{settings.input_token.get_secret_value()}@github.com/{settings.github_repository}.git"
 repo.remotes.origin.set_url(remote_repo_url)
+markdown_glob = f'{settings.input_markdown}/*.md' if Path(settings.input_markdown).is_dir() else settings.input_markdown
 
-if Path(settings.input_markdown).is_dir():
-    settings.input_markdown = f'{settings.input_markdown}/*.md'
-
-for file_path in Path(".").glob(settings.input_markdown):
+for file_path in Path(".").glob(markdown_glob):
     with file_path.open("r+") as file:
         overwrite_file(file, render(file.read()))
         repo.index.add([str(file_path)])
@@ -57,8 +54,7 @@ for file_path in Path(".").glob(settings.input_markdown):
 if repo.is_dirty(untracked_files=True):
     repo.index.commit(
         settings.input_message,
-        author=actor,
-        committer=actor,
+        author=Actor(settings.github_actor, "github-actions@github.com"),
     )
     repo.remotes.origin.push(f"HEAD:{ref}").raise_if_error()
 else:

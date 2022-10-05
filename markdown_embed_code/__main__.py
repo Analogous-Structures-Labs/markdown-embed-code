@@ -5,7 +5,7 @@ from typing import TextIO
 from git import Actor, Repo
 from pydantic import BaseSettings, SecretStr
 
-from markdown_embed_code import render_markdown
+from markdown_embed_code import render_markdown_file
 
 
 class MissingRefError(Exception):
@@ -21,14 +21,6 @@ class Settings(BaseSettings):
     input_markdown: str = "README.md"
     input_message: str = "Embed code into Markdown."
     input_token: SecretStr
-
-
-def render_file(file_path: Path):
-    with file_path.open("r+") as file:
-        rendered_contents = render_markdown(file.read())
-        file.seek(0)
-        file.write(rendered_contents)
-        file.truncate()
 
 
 def main(settings: Settings):
@@ -56,7 +48,7 @@ def main(settings: Settings):
     markdown_glob = f"{settings.input_markdown}/*.md" if (workspace / settings.input_markdown).is_dir() else settings.input_markdown
 
     for file_path in Path(workspace).glob(markdown_glob):
-        render_file(file_path)
+        render_markdown_file(file_path)
         repo.index.add([str(file_path)])
 
     if repo.is_dirty(untracked_files=True):

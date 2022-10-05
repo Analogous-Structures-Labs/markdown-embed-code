@@ -41,12 +41,12 @@ def main(settings: Settings):
         render_markdown_file(file_path)
 
     repo = Repo(workspace)
+    repo.remotes.origin.set_url(
+        f"https://{settings.github_actor}:{settings.input_token.get_secret_value()}@github.com/{settings.github_repository}.git"
+    )
     repo.index.add([glob_pattern])
 
     if repo.is_dirty(untracked_files=True):
-        repo.remotes.origin.set_url(
-            f"https://{settings.github_actor}:{settings.input_token.get_secret_value()}@github.com/{settings.github_repository}.git"
-        )
         repo.index.commit(
             settings.input_message,
             author=Actor(

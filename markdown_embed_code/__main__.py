@@ -29,12 +29,12 @@ def main(settings: Settings):
     if not ref:
         raise MissingRefError()
 
-    workspace = Path(settings.github_workspace)
-
     # WORKAROUND: The checkout action clones the repo out as the runner user (id 1001) and our
     # container / script runs as root, as recommended by the actions documentation.
     # The below ensures that this script has permission to do its work.
-    run(["chown", "-R", getuid(), workspace], check=True)
+    run(["chown", "-R", getuid(), settings.github_workspace], check=True)
+
+    workspace = Path(settings.github_workspace)
 
     glob_pattern = f"{settings.input_markdown}/*.md" if (workspace / settings.input_markdown).is_dir() else settings.input_markdown
 

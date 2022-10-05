@@ -48,7 +48,7 @@ if not ref:
 actor = Actor(settings.github_actor, "github-actions@github.com")
 remote_repo_url = f"https://{settings.github_actor}:{settings.input_token.get_secret_value()}@github.com/{settings.github_repository}.git"
 repo = Repo(".")
-repo.remotes.origin.set_url(remote_repo_url)
+repo.create_remote('origin', remote_repo_url)
 
 if Path(settings.input_markdown).is_dir():
     settings.input_markdown = f'{settings.input_markdown}/*.md'

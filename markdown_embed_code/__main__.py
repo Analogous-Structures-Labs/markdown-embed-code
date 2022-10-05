@@ -35,19 +35,18 @@ def main(settings: Settings):
     # The below ensures that this script has permission to do its work.
     chown(workspace, getuid(), getgid())
 
-    repo = Repo(workspace)
-    repo.remotes.origin.set_url(
-        f"https://{settings.github_actor}:{settings.input_token.get_secret_value()}@github.com/{settings.github_repository}.git"
-    )
-
     glob_pattern = f"{settings.input_markdown}/*.md" if (workspace / settings.input_markdown).is_dir() else settings.input_markdown
 
     for file_path in Path(workspace).glob(glob_pattern):
         render_markdown_file(file_path)
 
+    repo = Repo(workspace)
     repo.index.add([glob_pattern])
 
     if repo.is_dirty(untracked_files=True):
+        repo.remotes.origin.set_url(
+            f"https://{settings.github_actor}:{settings.input_token.get_secret_value()}@github.com/{settings.github_repository}.git"
+        )
         repo.index.commit(
             settings.input_message,
             author=Actor(

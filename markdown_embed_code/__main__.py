@@ -44,12 +44,12 @@ def main(settings: Settings):
         f"https://{settings.github_actor}:{settings.input_token.get_secret_value()}@github.com/{settings.github_repository}.git"
     )
 
-    markdown_glob = f"{settings.input_markdown}/*.md" if (workspace / settings.input_markdown).is_dir() else settings.input_markdown
+    glob_pattern = f"{settings.input_markdown}/*.md" if (workspace / settings.input_markdown).is_dir() else settings.input_markdown
 
-    for file_path in Path(workspace).glob(markdown_glob):
+    for file_path in Path(workspace).glob(glob_pattern):
         render_markdown_file(file_path)
 
-    repo.index.add([markdown_glob])
+    repo.index.add([glob_pattern])
 
     if repo.is_dirty(untracked_files=True):
         repo.index.commit(

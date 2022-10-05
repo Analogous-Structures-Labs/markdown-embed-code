@@ -32,9 +32,9 @@ ref = settings.github_head_ref or settings.github_ref
 if not ref:
     exit(1)
 
-# WORKAROUND: The checkout action checks out code as the runner user (1001:121). Our container
-# runs as root as recommended by the GitHub actions documentation. The subsequent git commands fail.
-# The below ensures that the runner of this script owns the repo directory.
+# WORKAROUND: The checkout action checks the rpo out as the runner user (1001:121) causing issues
+# with this script running in our container as root, which is recommended by the actions documentation.
+# The below ensures that the runner of this script can do its work.
 run(
     f"chown -R $(id -u):$(id-g) .",
     check=True,

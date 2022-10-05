@@ -2,7 +2,7 @@ from git import Actor, Repo
 from pathlib import Path
 from subprocess import run
 from sys import exit
-from typing import List
+from typing import TextIO
 
 from pydantic import BaseSettings, SecretStr
 
@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     input_token: SecretStr
 
 
-def overwrite_file(file_handle, new_contents):
+def overwrite_file(file_handle: TextIO, new_contents: str):
     file_handle.seek(0)
     file_handle.write(new_contents)
     file_handle.truncate()

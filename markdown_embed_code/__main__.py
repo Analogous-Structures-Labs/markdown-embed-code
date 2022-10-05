@@ -42,8 +42,10 @@ run(
 )
 
 repo = Repo(".")
-remote_repo_url = f"https://{settings.github_actor}:{settings.input_token.get_secret_value()}@github.com/{settings.github_repository}.git"
-repo.remotes.origin.set_url(remote_repo_url)
+repo.remotes.origin.set_url(
+    f"https://{settings.github_actor}:{settings.input_token.get_secret_value()}@github.com/{settings.github_repository}.git"
+)
+
 markdown_glob = f'{settings.input_markdown}/*.md' if Path(settings.input_markdown).is_dir() else settings.input_markdown
 
 for file_path in Path(".").glob(markdown_glob):

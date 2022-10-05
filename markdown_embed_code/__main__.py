@@ -61,7 +61,7 @@ if repo.is_dirty(untracked_files=True):
         settings.input_message,
         author=Actor(
             name=settings.github_actor,
-            email="github-actions@github.com",
+            email=f"{settings.github_actor}@github.com",
         ),
     )
     repo.remotes.origin.push(f"HEAD:{ref}").raise_if_error()

@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     github_head_ref: str
     github_ref: str
     github_repository: str
+    github_workspace: str
     input_markdown: str = "README.md"
     input_message: str = "Embed code into Markdown."
     input_token: SecretStr
@@ -50,13 +51,11 @@ remote_repo_url = f"https://{settings.github_actor}:{settings.input_token.get_se
 repo = Repo(".")
 
 with repo.config_writer() as git_config:
-    git_config.set_value("global", "safe.directory", ".")
-    # git_config.set_value('user', 'email', 'someone@example.com')
-    # git_config.set_value('user', 'name', 'John Doe')
+    git_config.set_value("global", "safe.directory", settings.github_workspace)
+    git_config.set_value('user', 'name', Actor.name)
+    git_config.set_value('user', 'email', Actor.email)
 
 repo.remotes.origin.set_url(remote_repo_url)
-
-
 
 if Path(settings.input_markdown).is_dir():
     settings.input_markdown = f'{settings.input_markdown}/*.md'

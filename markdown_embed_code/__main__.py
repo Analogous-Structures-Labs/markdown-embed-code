@@ -1,5 +1,5 @@
+from os import chown, getgid, getuid
 from pathlib import Path
-from subprocess import run
 
 from git import Actor, Repo
 from pydantic import BaseSettings, SecretStr
@@ -33,11 +33,7 @@ def main(settings: Settings):
     # WORKAROUND: The checkout action clones the repo out as the runner user (id 1001) and our
     # container / script runs as root, as recommended by the actions documentation.
     # The below ensures that this script has permission to do its work.
-    run(
-        f"chown -R $(id -u) {workspace}",
-        check=True,
-        shell=True,
-    )
+    chown(workspace, getuid(), getgid())
 
     repo = Repo(workspace)
     repo.remotes.origin.set_url(

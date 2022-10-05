@@ -32,8 +32,8 @@ ref = settings.github_head_ref or settings.github_ref
 if not ref:
     exit(1)
 
-# WORKAROUND: The checkout action checks the rpo out as the runner user (1001:121) causing issues
-# with this script running in our container as root, which is recommended by the actions documentation.
+# WORKAROUND: The checkout action checks the rpo out as the runner user (uid 1001) causing issues with
+# this script running in our container as root, which is recommended by the actions documentation.
 # The below ensures that the runner of this script can do its work.
 run(
     f"chown -R $(id -u) .",

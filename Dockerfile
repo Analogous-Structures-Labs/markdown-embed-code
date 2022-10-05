@@ -13,6 +13,4 @@ RUN apk add --no-cache --update \
 
 COPY ./markdown_embed_code $APP_DIR/markdown_embed_code
 
-RUN git config --global --add safe.directory /github/workspace
-
 CMD ["python", "-m", "markdown_embed_code"]

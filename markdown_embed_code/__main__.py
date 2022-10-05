@@ -1,6 +1,7 @@
-import subprocess
-import sys
+from git import Actor, Repo
 from pathlib import Path
+from subprocess import run
+from sys import exit
 from typing import List
 
 from pydantic import BaseSettings, SecretStr
@@ -19,7 +20,7 @@ class Settings(BaseSettings):
 
 
 def run_command(command: List, **kwargs):
-    return subprocess.run(
+    return run(
         command,
         check=True,
         **kwargs,
@@ -37,15 +38,17 @@ settings = Settings()
 # The checkout action checks out code as the runner user (1001:121). Our docker image runs as root
 # as recommended by the GitHub actions documentation. For that reason, we're ensuring he the user
 # running the script owns the workspace. Otherwise, the subsequent git commands will fail.
-run_command("chown -R $(id -u):$(id-g) .", shell=True)
-
-run_command(["git", "config", "--local", "user.name", "github-actions"])
-run_command(["git", "config", "--local", "user.email", "github-actions@github.com"])
+#run_command("chown -R $(id -u):$(id-g) .", shell=True)
 
 ref = settings.github_head_ref or settings.github_ref
 
 if not ref:
-    sys.exit(1)
+    exit(1)
+
+actor = Actor(settings.github_actor, "github-actions@github.com")
+remote_repo_url = f"https://{settings.github_actor}:{settings.input_token.get_secret_value()}@github.com/{settings.github_repository}.git"
+repo = Repo(".")
+repo.remotes.origin.set_url(remote_repo_url)
 
 if Path(settings.input_markdown).is_dir():
     settings.input_markdown = f'{settings.input_markdown}/*.md'
@@ -53,16 +56,14 @@ if Path(settings.input_markdown).is_dir():
 for file_path in Path(".").glob(settings.input_markdown):
     with file_path.open("r+") as file:
         overwrite_file(file, render(file.read()))
-        run_command(["git", "add", file_path])
+        repo.index.add(file_path)
 
-git_status_output = run_command(
-    ["git", "status", "--porcelain"],
-    stdout=subprocess.PIPE,
-).stdout
-
-if git_status_output:
-    run_command(["git", "commit", "-m", settings.input_message])
-    remote_repo = f"https://{settings.github_actor}:{settings.input_token.get_secret_value()}@github.com/{settings.github_repository}.git"
-    run_command(["git", "push", remote_repo, f"HEAD:{ref}"])
+if repo.is_dirty(untracked_files=True):
+    repo.index.commit(
+        settings.input_message,
+        author=actor,
+        committer=actor,
+    )
+    repo.remotes.origin.push(f"HEAD:{ref}").raise_if_error()
 else:
     print("No changes to commit.")

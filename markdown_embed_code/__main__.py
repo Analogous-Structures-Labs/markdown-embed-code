@@ -1,12 +1,15 @@
 from pathlib import Path
 from subprocess import run
-from sys import exit
 from typing import TextIO
 
 from git import Actor, Repo
 from pydantic import BaseSettings, SecretStr
 
 from markdown_embed_code import render_markdown
+
+
+class MissingRefError(Exception):
+    ...
 
 
 class Settings(BaseSettings):
@@ -63,6 +66,7 @@ if repo.is_dirty(untracked_files=True):
             name=settings.github_actor,
             email=f"{settings.github_actor}@github.com",
         ),
+    raise MissingRefError()
     )
     repo.remotes.origin.push(f"HEAD:{ref}").raise_if_error()
 else:

@@ -1,5 +1,6 @@
-from os import chown, getgid, getuid
+from os import getuid
 from pathlib import Path
+from subprocess import run
 
 from git import Actor, Repo
 from pydantic import BaseSettings, SecretStr
@@ -33,7 +34,7 @@ def main(settings: Settings):
     # WORKAROUND: The checkout action clones the repo out as the runner user (id 1001) and our
     # container / script runs as root, as recommended by the actions documentation.
     # The below ensures that this script has permission to do its work.
-    # chown(workspace, getuid(), getgid())
+    run(["chown", "-R", getuid(), workspace], check=True)
 
     glob_pattern = f"{settings.input_markdown}/*.md" if (workspace / settings.input_markdown).is_dir() else settings.input_markdown
 

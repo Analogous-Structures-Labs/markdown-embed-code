@@ -1,9 +1,9 @@
-from git import Actor, Repo
 from pathlib import Path
 from subprocess import run
 from sys import exit
 from typing import TextIO
 
+from git import Actor, Repo
 from pydantic import BaseSettings, SecretStr
 
 from markdown_embed_code import render

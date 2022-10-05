@@ -52,8 +52,8 @@ repo = Repo(".")
 
 with repo.config_writer() as git_config:
     git_config.set_value("global", "safe.directory", settings.github_workspace)
-    git_config.set_value('user', 'name', Actor.name)
-    git_config.set_value('user', 'email', Actor.email)
+    git_config.set_value('user', 'name', settings.github_actor)
+    git_config.set_value('user', 'email', "github-actions@github.com")
 
 repo.remotes.origin.set_url(remote_repo_url)
 

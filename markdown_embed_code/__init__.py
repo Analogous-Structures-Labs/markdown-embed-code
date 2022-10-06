@@ -10,16 +10,6 @@ from marko import Markdown
 from marko.md_renderer import MarkdownRenderer
 
 
-def file_slice(
-    file_path: Path,
-    start_at: int = 1,
-    end_at: Optional[int] = None,
-) -> Iterator[str]:
-    with file_path.open() as file:
-        for line in islice(file, start_at - 1, end_at):
-            yield f"{line}\n" if line[-1] != "\n" else line
-
-
 @dataclass
 class Embed:
     file_path: Path
@@ -43,8 +33,14 @@ class Embed:
             end_at=end_at,
         )
 
+    @property
+    def lines(self) -> Iterator[str]:
+        with self.file_path.open() as file:
+            for line in islice(file, self.start_at - 1, self.end_at):
+                yield f"{line}\n" if line[-1] != "\n" else line
+
     def __str__(self) -> str:
-        return ''.join(file_slice(**self.__dict__))
+        return ''.join(self.lines)
 
 
 class MarkdownEmbedCodeRenderer(MarkdownRenderer):

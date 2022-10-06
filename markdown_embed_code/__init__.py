@@ -29,15 +29,18 @@ class Embed:
     @classmethod
     def parse_from_extra(cls, extra: str) -> Embed:
         try:
-            pattern = r"\s*(?P<file_path>.+\S)(?:\s*\[\s*(?P<start_at>\d+)\s*(?:-|:|,)?\s*(?P<end_at>\d*)?\s*\])"
-            file_path, start_at, end_at = match(pattern, extra).group("file_path", "start_at", "end_at")
+            pattern = r"\s*(?P<file_path>.+\S)(?:\s*\[\s*(?P<start_at>\d*)\s*(?P<colon>:)?\s*(?P<end_at>\d*)?\s*\])"
+            file_path, start_at, colon, end_at = match(pattern, extra).group("file_path", "start_at", "colon", "end_at")
         except AttributeError:
-            file_path, start_at, end_at = extra, 1, None
+            file_path, start_at, colon, end_at = extra, 1, None, None
+
+        start_at = int(start_at or 1) or 1
+        end_at = start_at if not colon else (int(end_at) if end_at else None)
 
         return cls(
             file_path=Path(file_path),
-            start_at=int(start_at) or 1,
-            end_at=int(end_at) if end_at else None,
+            start_at=start_at,
+            end_at=end_at,
         )
 
     def __str__(self) -> str:

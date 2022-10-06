@@ -1,17 +1,18 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
 from itertools import islice
 from pathlib import Path
 from re import match
-from typing import Iterator, Optional
+from typing import Optional
 
 from marko import Markdown
 from marko.md_renderer import MarkdownRenderer
 
 
 @dataclass
-class Embed:
+class Embed(Iterable):
     file_path: Path
     start_at: int
     end_at: Optional[int]
@@ -33,14 +34,13 @@ class Embed:
             end_at=end_at,
         )
 
-    @property
-    def lines(self) -> Iterator[str]:
+    def __iter__(self):
         with self.file_path.open() as file:
             for line in islice(file, self.start_at - 1, self.end_at):
                 yield f"{line}\n" if line[-1] != "\n" else line
 
     def __str__(self) -> str:
-        return ''.join(self.lines)
+        return ''.join(self)
 
 
 class MarkdownEmbedCodeRenderer(MarkdownRenderer):

@@ -1,6 +1,4 @@
-from os import getuid
 from pathlib import Path
-from subprocess import run
 
 from git import Actor, Repo
 from pydantic import BaseSettings, SecretStr

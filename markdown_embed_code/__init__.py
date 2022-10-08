@@ -22,8 +22,8 @@ class Embed(Iterable):
         try:
             pattern = r"\s*(?P<file_path>.+\S)(?:\s*\[\s*(?P<start_at>\d*)\s*(?P<has_colon>:)?\s*(?P<end_at>\d*)?\s*\])"
             file_path, start_at, has_colon, end_at = match(pattern, extra).group("file_path", "start_at", "has_colon", "end_at")
-            end_at = start_at if start_at and not has_colon else end_at
             end_at = None if has_colon and not end_at else end_at
+            end_at = start_at if not has_colon and start_at else end_at
         except AttributeError:
             file_path, start_at, end_at = extra, 1, None
 

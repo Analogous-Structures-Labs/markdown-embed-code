@@ -1,3 +1,5 @@
+from pathlib import PosixPath
+
 import pytest
 
 from markdown_embed_code import Embed, render_markdown
@@ -8,47 +10,63 @@ from markdown_embed_code import Embed, render_markdown
     [
         (
             "tests/src/sample.py[4:5]",
-            {"file_path": "tests/src/sample.py", "start_at": 4, "end_at": 5},
+            {"file_path": PosixPath("tests/src/sample.py"), "start_at": 4, "end_at": 5},
         ),
         (
             "tests/src/sample.py [4:5]",
-            {"file_path": "tests/src/sample.py", "start_at": 4, "end_at": 5},
+            {"file_path": PosixPath("tests/src/sample.py"), "start_at": 4, "end_at": 5},
         ),
         (
             "tests/src/sample.py      [4:5]",
-            {"file_path": "tests/src/sample.py", "start_at": 4, "end_at": 5},
+            {"file_path": PosixPath("tests/src/sample.py"), "start_at": 4, "end_at": 5},
         ),
         (
             "tests/src/sample.py [ 4:5 ]",
-            {"file_path": "tests/src/sample.py", "start_at": 4, "end_at": 5},
+            {"file_path": PosixPath("tests/src/sample.py"), "start_at": 4, "end_at": 5},
         ),
         (
             "tests/src/sample.py [ 4 : 5 ]",
-            {"file_path": "tests/src/sample.py", "start_at": 4, "end_at": 5},
+            {"file_path": PosixPath("tests/src/sample.py"), "start_at": 4, "end_at": 5},
         ),
         (
             "tests/src/sample.py [4]",
-            {"file_path": "tests/src/sample.py", "start_at": 4, "end_at": 4},
+            {"file_path": PosixPath("tests/src/sample.py"), "start_at": 4, "end_at": 4},
         ),
         (
             "tests/src/sample.py [4:]",
-            {"file_path": "tests/src/sample.py", "start_at": 4, "end_at": None},
+            {
+                "file_path": PosixPath("tests/src/sample.py"),
+                "start_at": 4,
+                "end_at": None,
+            },
         ),
         (
             "tests/src/sample.py [:5]",
-            {"file_path": "tests/src/sample.py", "start_at": 1, "end_at": 5},
+            {"file_path": PosixPath("tests/src/sample.py"), "start_at": 1, "end_at": 5},
         ),
         (
             "tests/src/sample.py [0:]",
-            {"file_path": "tests/src/sample.py", "start_at": 1, "end_at": None},
+            {
+                "file_path": PosixPath("tests/src/sample.py"),
+                "start_at": 1,
+                "end_at": None,
+            },
         ),
         (
             "tests/src/sample.py [:]",
-            {"file_path": "tests/src/sample.py", "start_at": 1, "end_at": None},
+            {
+                "file_path": PosixPath("tests/src/sample.py"),
+                "start_at": 1,
+                "end_at": None,
+            },
         ),
         (
             "tests/src/sample.py []",
-            {"file_path": "tests/src/sample.py", "start_at": 1, "end_at": None},
+            {
+                "file_path": PosixPath("tests/src/sample.py"),
+                "start_at": 1,
+                "end_at": None,
+            },
         ),
         (
             "tests/src/sample.py [",

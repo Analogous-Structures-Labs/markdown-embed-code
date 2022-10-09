@@ -60,6 +60,10 @@ class MarkdownEmbedCodeRenderer(MarkdownRenderer):
 _markdown = Markdown(renderer=MarkdownEmbedCodeRenderer)
 
 
+def render_markdown(contents: str):
+    return _markdown(contents)
+
+
 def render_markdown_file(file_path: Path):
     with file_path.open("r+") as file:
         rendered_contents = _markdown(file.read())

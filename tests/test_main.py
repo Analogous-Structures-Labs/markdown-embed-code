@@ -56,7 +56,6 @@ def test_embed_slice():
     ), "Code was not embedded correctly."
 
 
-
 def test_embed_slice_with_no_start():
     markdown = """```python tests/src/sample.py [:5]\n```\n"""
     assert render_markdown(markdown) == (
@@ -68,7 +67,6 @@ def test_embed_slice_with_no_start():
         "def subtract(x, y):\n"
         "```\n"
     ), "Code was not embedded correctly."
-
 
 
 def test_embed_slice_with_no_end():

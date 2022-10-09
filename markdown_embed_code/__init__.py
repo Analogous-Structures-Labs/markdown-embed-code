@@ -21,7 +21,9 @@ class Embed(Iterable):
     def parse_from_extra(cls, extra: str) -> Embed:
         try:
             pattern = r"\s*(?P<file_path>.+\S)(?:\s*\[\s*(?P<start_at>\d*)\s*(?P<has_colon>:)?\s*(?P<end_at>\d*)?\s*\])"
-            file_path, start_at, has_colon, end_at = match(pattern, extra).group("file_path", "start_at", "has_colon", "end_at")
+            file_path, start_at, has_colon, end_at = match(pattern, extra).group(
+                "file_path", "start_at", "has_colon", "end_at"
+            )
             end_at = None if has_colon and not end_at else end_at
             end_at = start_at if not has_colon and start_at else end_at
         except AttributeError:
@@ -39,13 +41,15 @@ class Embed(Iterable):
                 yield f"{line}\n" if line[-1] != "\n" else line
 
     def __str__(self) -> str:
-        return ''.join(self)
+        return "".join(self)
 
 
 class MarkdownEmbedCodeRenderer(MarkdownRenderer):
     def render_fenced_code(self, element):
         if element.__dict__["extra"]:
-            element.children[0].children = str(Embed.parse_from_extra(element.__dict__["extra"]))
+            element.children[0].children = str(
+                Embed.parse_from_extra(element.__dict__["extra"])
+            )
 
         return super().render_fenced_code(element)
 

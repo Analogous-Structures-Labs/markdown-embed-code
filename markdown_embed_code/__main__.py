@@ -29,7 +29,11 @@ def main(settings: Settings):
 
     workspace = Path(settings.github_workspace)
 
-    glob_pattern = f"{settings.input_markdown}/*.md" if (workspace / settings.input_markdown).is_dir() else settings.input_markdown
+    glob_pattern = (
+        f"{settings.input_markdown}/*.md"
+        if (workspace / settings.input_markdown).is_dir()
+        else settings.input_markdown
+    )
 
     for file_path in Path(workspace).glob(glob_pattern):
         render_markdown_file(file_path)

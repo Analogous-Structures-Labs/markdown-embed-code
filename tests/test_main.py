@@ -70,7 +70,11 @@ from markdown_embed_code import Embed, render_markdown
         ),
         (
             "tests/src/sample.py [",
-            {"file_path": "tests/src/sample.py [", "start_at": 1, "end_at": None},
+            {
+                "file_path": PosixPath("tests/src/sample.py ["),
+                "start_at": 1,
+                "end_at": None,
+            },
         ),
     ],
 )
@@ -94,7 +98,6 @@ def test_embed_entire_file():
         "\n"
         "def multiply(x, y):\n"
         "    return x + y\n"
-        "\n"
         "```\n"
     ), "Code was not embedded correctly."
 
@@ -102,7 +105,7 @@ def test_embed_entire_file():
 def test_embed_slice():
     markdown = """```python tests/src/sample.py [4:8]\n```\n"""
     assert render_markdown(markdown) == (
-        "```python tests/src/sample.py\n"
+        "```python tests/src/sample.py [4:8]\n"
         "\n"
         "def subtract(x, y):\n"
         "    return x - y\n"
@@ -115,7 +118,7 @@ def test_embed_slice():
 def test_embed_slice_with_no_start():
     markdown = """```python tests/src/sample.py [:5]\n```\n"""
     assert render_markdown(markdown) == (
-        "```python tests/src/sample.py\n"
+        "```python tests/src/sample.py [:5]\n"
         "def add(x, y):\n"
         "    return x + y\n"
         "\n"
@@ -128,14 +131,13 @@ def test_embed_slice_with_no_start():
 def test_embed_slice_with_no_end():
     markdown = """```python tests/src/sample.py [5:]\n```\n"""
     assert render_markdown(markdown) == (
-        "```python tests/src/sample.py\n"
+        "```python tests/src/sample.py [5:]\n"
         "def subtract(x, y):\n"
         "    return x - y\n"
         "\n"
         "\n"
         "def multiply(x, y):\n"
         "    return x + y\n"
-        "\n"
         "```\n"
     ), "Code was not embedded correctly."
 
@@ -143,7 +145,7 @@ def test_embed_slice_with_no_end():
 def test_embed_single_line():
     markdown = """```python tests/src/sample.py [6]\n```\n"""
     assert render_markdown(markdown) == (
-        "```python tests/src/sample.py\n" "    return x - y\n" "```\n"
+        "```python tests/src/sample.py [6]\n" "    return x - y\n" "```\n"
     ), "Code was not embedded correctly."
 
 
@@ -161,7 +163,6 @@ def test_override_existing_code():
         "\n"
         "def multiply(x, y):\n"
         "    return x + y\n"
-        "\n"
         "```\n"
     ), "Code was not embedded correctly."
 

@@ -15,7 +15,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip -r requirements.txt -r requirements.dev.txt
+          pip install -r requirements.txt -r requirements.dev.txt
       - name: Lint
         run: |
           flake8 markdown_embed_code tests

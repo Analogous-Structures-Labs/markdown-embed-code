@@ -1,10 +1,9 @@
-name: Python package
+name: tests
 
 on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -23,4 +22,4 @@ jobs:
           isort markdown_embed_code tests scripts --check-only
       - name: Test with pytest
         run: |
-          pytest --cov=markdown_embed_code --cov=tests --cov-report=term-missing --cov-report=xml tests
+          pytest --cov=markdown_embed_code --cov-report=term-missing --cov-report=xml tests

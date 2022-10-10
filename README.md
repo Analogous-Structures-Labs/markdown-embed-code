@@ -1,19 +1,28 @@
 # markdown-embed-code
 
-Forked from [https://github.com/tokusumi/readme-code-testing](https://github.com/tokusumi/readme-code-testing) and partially rewritten with some fixes, some features added, some removed.
+[![tests](https://github.com/Analogous-Structures-Labs/markdown-embed-code/actions/workflows/build_and_test.yml/badge.svg?branch=main)](https://github.com/Analogous-Structures-Labs/markdown-embed-code/actions/workflows/build_and_test.yml)
 
 Allows you to "import" code into your markdown files from elsewhere in your repository without having to manually copy and paste.
 Supports code blocks in any language. Your original markdown file(s) will be overwritten with the rendered content.
 
-<!-- See [demo repo](https://github.com/tokusumi/readme-code-testing) if you are interested in testing code within README. -->
+Originally Forked from and inspired by [https://github.com/tokusumi/markdown-embed-code](https://github.com/tokusumi/markdown-embed-code) which appears to have been abandoned, enough has changed for this to be considered separate and no longer a drop in replacement. The general purpose and structure remain the same. The below list covers most of what has changed:
+
+* Some bugs were fixed along the way and, more than likely, new ones were introduced.
+* Features related to auto-commenting on PRs and rendering markdown files to different paths have been removed, at least for he time being.
+* Instead of using a colon (:) to separate that syntax highlighting language for the embed directive, we now use a space. The colon has significance in some syntax highlighting grammars. Using it as a separator breaks syntax highlighting with those grammars.
+* Syntax is loosely based on Python List access and slicing as closely as possible. The following notable differences should be considered:
+  * Line numbers are one-based (start at 1) instead of zero-based, the former being widely accepted when numbering lines in a file and the latter being the standard way to enumerate iterable objects in most programming language.
+  * Negative indexing is not supported.
+  * Referencing a line number beyond the end of he file doesn't presently generate an error.
+* You can now provide a path to a single file, a directory, or a glob pattern when targeting your markdown, making it possible to process multiple files.
+* Parsing is now handled using regular expressions which should be both cleaner, more reliable, and more flexible.
+* Interaction with git is now doing using [https://github.com/gitpython-developers/GitPython](GitPython) instead of running git commands via subprocess.
 
 ## Usage
 
 ### Embedding Entire files
 
 In markdown, reference your file as follows in an otherwise empty code block.
-
-NOTE: This action and the one it was forked from previously used a semicolon to separate the language and the file being embedded. I've since become aware of at least one grammar where semicolon is significant. This causes the previous syntax to break highlighting. The library now breaks on the first space after the language. This will hopefully be universally compatable with all grammars.
 
 ````markdown
 ```python tests/src/sample.py
@@ -24,12 +33,6 @@ NOTE: This action and the one it was forked from previously used a semicolon to 
 The action reads in the content from `tests/src/sample.py` and inserts its contents into your code block like so:
 
 ```python tests/src/sample.py
-from math import sqrt
-
-
-def sample(x):
-    return sqrt(x)
-
 ```
 
 Any contents within your code block will be overwritten. Paths are relative to the root of your repository and not the directory containing the file being processed.
@@ -39,17 +42,26 @@ Any contents within your code block will be overwritten. Paths are relative to t
 You can pull in a snippet from a file by including a range of line numbers like so:
 
 ````markdown
-```python tests/src/sample.py [4-5]
+```python tests/src/sample.py [4:6]
 
 ```
 ````
 
 Which will render the following output.
 
-```python tests/src/sample.py [4-5]
-def sample(x):
-    return sqrt(x)
+```python tests/src/sample.py [4:6]
 ```
+
+The following are all valid ways to specify a snippet:
+
+| syntax  | effect                                       |
+| ------- | -------------------------------------------- |
+| [5:10]  | Only lines 5 up until 10.                    |
+| [5:]    | From line 5 through the end of the file.     |
+| [:10]   | Everything up until line 10.                 |
+| [5]     | Line 5 and only line 5.                      |
+| [:], [] | All lines, equivalent of specifying nothing. |
+
 
 ### Workflow setup
 

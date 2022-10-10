@@ -30,7 +30,7 @@ from markdown_embed_code import Embed, render_markdown
         ),
         (
             "tests/src/sample.py [4]",
-            {"file_path": PosixPath("tests/src/sample.py"), "start_at": 4, "end_at": 4},
+            {"file_path": PosixPath("tests/src/sample.py"), "start_at": 4, "end_at": 5},
         ),
         (
             "tests/src/sample.py [4:]",
@@ -110,7 +110,6 @@ def test_embed_slice():
         "def subtract(x, y):\n"
         "    return x - y\n"
         "\n"
-        "\n"
         "```\n"
     ), "Code was not embedded correctly."
 
@@ -123,7 +122,6 @@ def test_embed_slice_with_no_start():
         "    return x + y\n"
         "\n"
         "\n"
-        "def subtract(x, y):\n"
         "```\n"
     ), "Code was not embedded correctly."
 

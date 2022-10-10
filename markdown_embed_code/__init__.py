@@ -45,7 +45,9 @@ class Embed(Iterable):
 
     def __iter__(self):
         with self.file_path.open() as file:
-            for line in islice(file, self.start_at - 1, self.end_at - 1 if self.end_at else None):
+            for line in islice(
+                file, self.start_at - 1, self.end_at - 1 if self.end_at else None
+            ):
                 yield f"{line}\n" if line[-1] != "\n" else line
 
     def __str__(self) -> str:

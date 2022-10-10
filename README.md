@@ -24,15 +24,25 @@ Originally Forked from and inspired by [https://github.com/tokusumi/markdown-emb
 
 In markdown, reference your file as follows in an otherwise empty code block.
 
-````markdown
+```markdown
 ```python tests/src/sample.py
 
 ```
-````
+```
 
 The action reads in the content from `tests/src/sample.py` and inserts its contents into your code block like so:
 
 ```python tests/src/sample.py
+def add(x, y):
+    return x + y
+
+
+def subtract(x, y):
+    return x - y
+
+
+def multiply(x, y):
+    return x + y
 ```
 
 Any contents within your code block will be overwritten. Paths are relative to the root of your repository and not the directory containing the file being processed.
@@ -41,15 +51,17 @@ Any contents within your code block will be overwritten. Paths are relative to t
 
 You can pull in a snippet from a file by including a range of line numbers like so:
 
-````markdown
+```markdown
 ```python tests/src/sample.py [4:6]
 
 ```
-````
+```
 
 Which will render the following output.
 
 ```python tests/src/sample.py [4:6]
+
+def subtract(x, y):
 ```
 
 The following are all valid ways to specify a snippet:
@@ -61,7 +73,6 @@ The following are all valid ways to specify a snippet:
 | [:10]   | Everything up until line 10.                 |
 | [5]     | Line 5 and only line 5.                      |
 | [:], [] | All lines, equivalent of specifying nothing. |
-
 
 ### Workflow setup
 
@@ -99,7 +110,6 @@ jobs:
 | token                | Token for the repo. Can be passed in using `{{ secrets.GITHUB_TOKEN }}`. |
 | markdown (Optional)  | Target path for your markdown file(s). (default: "README.md")            |
 | message (Optional)   | Commit message for action. (default: "Embed code into Markdown.")        |
-
 
 ### Specifying your markdown path
 

@@ -1,5 +1,10 @@
-from math import sqrt
+def add(x, y):
+    return x + y
 
 
-def sample(x):
-    return sqrt(x)
+def subtract(x, y):
+    return x - y
+
+
+def multiply(x, y):
+    return x + y

@@ -1,100 +1,170 @@
+from pathlib import PosixPath
+
 import pytest
 
-from markdown_embed_code import get_code_emb
-
-
-def test_embed_code_from_file():
-    """```[lang]:[filepath] are available."""
-    text = """```python:tests/src/sample.py\n```\n"""
-    code_emb = get_code_emb()
-    assert code_emb(text) == (
-        "```python:tests/src/sample.py\n"
-        "from math import sqrt\n"
-        "\n"
-        "\n"
-        "def sample(x):\n"
-        "    return sqrt(x)\n"
-        "\n"
-        "```\n"
-    )
-
-
-def test_override_embed_code_from_file():
-    """```[lang]:[filepath] are available."""
-    text_contains_code = (
-        """```python:tests/src/sample.py\nprint('code already exists')\n```\n"""
-    )
-    code_emb = get_code_emb()
-    assert code_emb(text_contains_code) == (
-        "```python:tests/src/sample.py\n"
-        "from math import sqrt\n"
-        "\n"
-        "\n"
-        "def sample(x):\n"
-        "    return sqrt(x)\n"
-        "\n"
-        "```\n"
-    ), "Must override code in text"
-
-
-def test_ignore_no_filepath():
-    """if no filepath, ignore them."""
-    text = """```python\n```\n"""
-    code_emb = get_code_emb()
-    assert text == code_emb(text)
+from markdown_embed_code import Embed, render_markdown
 
 
 @pytest.mark.parametrize(
-    "lang",
+    "extra,expected",
     [
-        "python:tests/src/sample.py[4-5]",
-        "python:tests/src/sample.py [4-5]",
+        (
+            "tests/src/sample.py[4:5]",
+            {"file_path": PosixPath("tests/src/sample.py"), "start_at": 4, "end_at": 5},
+        ),
+        (
+            "tests/src/sample.py [4:5]",
+            {"file_path": PosixPath("tests/src/sample.py"), "start_at": 4, "end_at": 5},
+        ),
+        (
+            "tests/src/sample.py      [4:5]",
+            {"file_path": PosixPath("tests/src/sample.py"), "start_at": 4, "end_at": 5},
+        ),
+        (
+            "tests/src/sample.py [ 4:5 ]",
+            {"file_path": PosixPath("tests/src/sample.py"), "start_at": 4, "end_at": 5},
+        ),
+        (
+            "tests/src/sample.py [ 4 : 5 ]",
+            {"file_path": PosixPath("tests/src/sample.py"), "start_at": 4, "end_at": 5},
+        ),
+        (
+            "tests/src/sample.py [4]",
+            {"file_path": PosixPath("tests/src/sample.py"), "start_at": 4, "end_at": 5},
+        ),
+        (
+            "tests/src/sample.py [4:]",
+            {
+                "file_path": PosixPath("tests/src/sample.py"),
+                "start_at": 4,
+                "end_at": None,
+            },
+        ),
+        (
+            "tests/src/sample.py [:5]",
+            {"file_path": PosixPath("tests/src/sample.py"), "start_at": 1, "end_at": 5},
+        ),
+        (
+            "tests/src/sample.py [0:]",
+            {
+                "file_path": PosixPath("tests/src/sample.py"),
+                "start_at": 1,
+                "end_at": None,
+            },
+        ),
+        (
+            "tests/src/sample.py [:]",
+            {
+                "file_path": PosixPath("tests/src/sample.py"),
+                "start_at": 1,
+                "end_at": None,
+            },
+        ),
+        (
+            "tests/src/sample.py []",
+            {
+                "file_path": PosixPath("tests/src/sample.py"),
+                "start_at": 1,
+                "end_at": None,
+            },
+        ),
+        (
+            "tests/src/sample.py [",
+            {
+                "file_path": PosixPath("tests/src/sample.py ["),
+                "start_at": 1,
+                "end_at": None,
+            },
+        ),
     ],
 )
-def test_embed_code_only_specific_line_from_file(lang):
-    """```[lang]:[filepath] [line no] are available."""
-    code_emb = get_code_emb()
-    text_contains_code = f"""```{lang}\n```\n"""
-    # fmt:off
-    assert code_emb(text_contains_code) == (
-        f"```{lang}\n"
-        "def sample(x):\n"
-        "    return sqrt(x)\n"
-        "```\n"
-    ), "Must contain selected lines in code in text"
-    # fmt:on
+def test_embed_parsing(extra, expected):
+    assert (
+        Embed.parse_from_extra(extra).__dict__ == expected
+    ), f"{extra} did not parse as expected"
 
 
-def test_embed_code_only_specific_line_from_file_2():
-    """```[lang]:[filepath] [line no] are available."""
-    text_code = """```python:tests/src/sample.py[4-]\n```\n"""
-    code_emb = get_code_emb()
-    assert code_emb(text_code) == (
-        "```python:tests/src/sample.py[4-]\n"
-        "def sample(x):\n"
-        "    return sqrt(x)\n"
+def test_embed_entire_file():
+    markdown = """```python tests/src/sample.py\n```\n"""
+    assert render_markdown(markdown) == (
+        "```python tests/src/sample.py\n"
+        "def add(x, y):\n"
+        "    return x + y\n"
         "\n"
+        "\n"
+        "def subtract(x, y):\n"
+        "    return x - y\n"
+        "\n"
+        "\n"
+        "def multiply(x, y):\n"
+        "    return x + y\n"
         "```\n"
-    ), "Must contain selected lines in code in text"
+    ), "Code was not embedded correctly."
 
-    text_code = """```python:tests/src/sample.py[4-6]\n```\n"""
-    code_emb = get_code_emb()
-    assert code_emb(text_code) == (
-        "```python:tests/src/sample.py[4-6]\n"
-        "def sample(x):\n"
-        "    return sqrt(x)\n"
-        "\n"
-        "```\n"
-    ), "Must contain selected lines in code in text"
 
-    text_code = """```python:tests/src/sample.py[-3]\n```\n"""
-    code_emb = get_code_emb()
-    # fmt:off
-    assert code_emb(text_code) == (
-        "```python:tests/src/sample.py[-3]\n"
-        "from math import sqrt\n"
+def test_embed_slice():
+    markdown = """```python tests/src/sample.py [4:8]\n```\n"""
+    assert render_markdown(markdown) == (
+        "```python tests/src/sample.py [4:8]\n"
+        "\n"
+        "def subtract(x, y):\n"
+        "    return x - y\n"
+        "\n"
+        "```\n"
+    ), "Code was not embedded correctly."
+
+
+def test_embed_slice_with_no_start():
+    markdown = """```python tests/src/sample.py [:5]\n```\n"""
+    assert render_markdown(markdown) == (
+        "```python tests/src/sample.py [:5]\n"
+        "def add(x, y):\n"
+        "    return x + y\n"
         "\n"
         "\n"
         "```\n"
-    ), "Must contain selected lines in code in text"
-    # fmt:on
+    ), "Code was not embedded correctly."
+
+
+def test_embed_slice_with_no_end():
+    markdown = """```python tests/src/sample.py [5:]\n```\n"""
+    assert render_markdown(markdown) == (
+        "```python tests/src/sample.py [5:]\n"
+        "def subtract(x, y):\n"
+        "    return x - y\n"
+        "\n"
+        "\n"
+        "def multiply(x, y):\n"
+        "    return x + y\n"
+        "```\n"
+    ), "Code was not embedded correctly."
+
+
+def test_embed_single_line():
+    markdown = """```python tests/src/sample.py [6]\n```\n"""
+    assert render_markdown(markdown) == (
+        "```python tests/src/sample.py [6]\n" "    return x - y\n" "```\n"
+    ), "Code was not embedded correctly."
+
+
+def test_override_existing_code():
+    markdown = """```python tests/src/sample.py\nprint('code already exists')\n```\n"""
+    assert render_markdown(markdown) == (
+        "```python tests/src/sample.py\n"
+        "def add(x, y):\n"
+        "    return x + y\n"
+        "\n"
+        "\n"
+        "def subtract(x, y):\n"
+        "    return x - y\n"
+        "\n"
+        "\n"
+        "def multiply(x, y):\n"
+        "    return x + y\n"
+        "```\n"
+    ), "Code was not embedded correctly."
+
+
+def test_ignore_no_filepath():
+    markdown = """```python\n```\n"""
+    assert render_markdown(markdown) == markdown, "Unintended embed."
